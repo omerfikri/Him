@@ -172,7 +172,6 @@ public class MainController implements Initializable {
                     }sayi2++;
                     if(sayi2 > 1){
                         notification();
-                        // notification();
                     }
                 }
                 select();

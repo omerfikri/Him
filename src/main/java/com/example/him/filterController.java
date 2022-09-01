@@ -40,7 +40,6 @@ public class filterController implements Initializable {
     SQLiteJDBC sqlite = new SQLiteJDBC();
     int id;
     int sayi=0;
-    MainController controller;
 
     private final ObservableList<String> liste1 = FXCollections.observableArrayList();
     private final ObservableList<String> liste2 = FXCollections.observableArrayList();

@@ -8,7 +8,6 @@ import java.util.List;
 
 public class SQLiteJDBC {
     int sayi;
-    MainController controller;
     public  void create(){
         Connection connection = null;
         Statement statement = null;
