@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="377.951171875" prefWidth="480.0" style="-fx-background-color:white;&#10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.him.aboutController">
+    <children>
+        <ImageView id="img" fitHeight="150.0" fitWidth="200.0" layoutX="136.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color:lightgray;&#10;">
+            <image>
+                <Image url="@images.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="160.0" layoutY="182.0" text="Haber İzleme Modülü" />
+        <Label id="lbl5" layoutX="160.0" layoutY="224.0" text="Version 1.0.1" />
+        <Label layoutX="160.0" layoutY="270.0" text="Merkezi Kayıt Kuruluşu" />
+        <Button fx:id="close" layoutX="383.0" layoutY="329.0" mnemonicParsing="false" onAction="#closed" prefWidth="76.0" text="OK" />
+    </children>
+</AnchorPane>

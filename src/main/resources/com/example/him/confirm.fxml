@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Font?>
+<AnchorPane disable="false" focusTraversable="false" minHeight="124.0" prefHeight="124.0" prefWidth="423.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.him.confirmController">
+    <children>
+        <Label fx:id="lbl0" layoutX="89.0" layoutY="3.0" prefHeight="82.0" prefWidth="334.0" text="Yeni gelen bildirimler için uyarı alamayacaksınız. Çıkmak istediğinizden emin misiniz ?" textAlignment="LEFT" textOverrun="WORD_ELLIPSIS" underline="false">
+            <font>
+                <Font name="Times New Roman" size="15.0" />
+            </font>
+        </Label>
+        <Pane layoutX="0.0" layoutY="73.0" prefHeight="51.0" prefWidth="425.0" style="-fx-background-color:gainsboro;">
+            <children>
+                <Button layoutX="231.0" layoutY="14.0" mnemonicParsing="false" onAction="#yes" prefWidth="77.0" text="Evet" />
+                <Button fx:id="no" layoutX="319.0" layoutY="14.0" mnemonicParsing="false" onAction="#no" prefWidth="77.0" text="Hayır" />
+            </children>
+        </Pane>
+        <ImageView fitHeight="42.0" fitWidth="42.0" layoutX="24.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@Blue_question_mark_icon.svg.png" />
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>

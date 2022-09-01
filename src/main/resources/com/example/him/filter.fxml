@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<AnchorPane prefHeight="530.0" prefWidth="767.0" style="-fx-background-color:gainsboro;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.him.filterController">
+    <children>
+        <AnchorPane layoutX="14.0" layoutY="62.0" prefHeight="454.0" prefWidth="739.0" style="-fx-background-color:gainsboro;&#10;-fx-border-color:gray;">
+            <children>
+                <TabPane disable="false" focusTraversable="true" layoutX="14.0" layoutY="77.0" prefHeight="363.0" prefWidth="711.0" style="-fx-background-color:white;" tabClosingPolicy="UNAVAILABLE" visible="true">
+                    <tabs>
+                        <Tab text="Şirketler">
+                            <content>
+                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" text="Şirket Tipi" />
+                                        <ComboBox fx:id="cmbbox1" layoutX="105.0" layoutY="12.0" onAction="#cmbbox1" prefWidth="397.0" promptText="BIST Şirketleri">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="BIST Şirketleri" />
+                                                    <String fx:value="Yatırım Kuruluşları" />
+                                                    <String fx:value="Portföy Yönetim Şirketleri" />
+                                                    <String fx:value="Bağımsız Denetim Kuruluşları" />
+                                                    <String fx:value="Derecelendirme Şirketleri" />
+                                                    <String fx:value="Değerleme Şirketleri" />
+                                                    <String fx:value="Diğer Kap Üyeleri ve İşlem Görmeyen Şirketler" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <AnchorPane layoutX="14.0" layoutY="44.0" prefHeight="264.0" prefWidth="683.0" style="-fx-border-color:lightgray;">
+                                            <children>
+                                                <ListView fx:id="list1" layoutX="14.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                                <Button layoutX="318.0" layoutY="35.0" mnemonicParsing="false" onAction="#right1" prefWidth="47.0" text="&gt;" />
+                                                <Button layoutX="318.0" layoutY="85.0" mnemonicParsing="false" onAction="#left1" prefWidth="47.0" text="&lt;" />
+                                                <Button layoutX="318.0" layoutY="135.0" mnemonicParsing="false" onAction="#rightall1" prefWidth="47.0" text="&gt;&gt;" />
+                                                <Button layoutX="318.0" layoutY="185.0" mnemonicParsing="false" onAction="#leftall1" prefWidth="47.0" text="&lt;&lt;" />
+                                                <ListView fx:id="list2" layoutX="379.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Fonlar">
+                            <content>
+                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" text="Fon Tipi" />
+                                        <ComboBox fx:id="cmbbox2" layoutX="105.0" layoutY="12.0" onAction="#cmbbox2" prefWidth="397.0" promptText="Yatırım Fonu">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Yatırım Fonu" />
+                                                    <String fx:value="Emeklilik Yatırım Fonu" />
+                                                    <String fx:value="Yabancı Yatırım Fonu" />
+                                                    <String fx:value="Borsa Yatırım Fonu" />
+                                                    <String fx:value="Varlık Finansman Fonları" />
+                                                    <String fx:value="Konut Finansman Fonları" />
+                                                    <String fx:value="Gayrimenkul Yatırım Fonları" />
+                                                    <String fx:value="Girişim Sermayesi Yatırım Fonları" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <AnchorPane layoutX="14.0" layoutY="44.0" prefHeight="264.0" prefWidth="683.0" style="-fx-border-color:lightgray;">
+                                            <children>
+                                                <Button layoutX="318.0" layoutY="35.0" mnemonicParsing="false" onAction="#right2" prefWidth="47.0" text="&gt;" />
+                                                <Button layoutX="318.0" layoutY="85.0" mnemonicParsing="false" onAction="#left2" prefWidth="47.0" text="&lt;" />
+                                                <Button layoutX="318.0" layoutY="135.0" mnemonicParsing="false" onAction="#rightall2" prefWidth="47.0" text="&gt;&gt;" />
+                                                <Button layoutX="318.0" layoutY="185.0" mnemonicParsing="false" onAction="#leftall2" prefWidth="47.0" text="&lt;&lt;" />
+                                                <ListView fx:id="list3" layoutX="14.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                                <ListView fx:id="list4" layoutX="379.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Şirket Bildirim Konuları">
+                            <content>
+                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" text="Bildirim Sınıfı" />
+                                        <ComboBox fx:id="cmbbox3" layoutX="105.0" layoutY="12.0" onAction="#cmbbox3" prefWidth="397.0" promptText="Finansal Rapor Bildirim Konuları">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Finansal Rapor Bildirim Konuları" />
+                                                    <String fx:value="Özel Durum Açıklaması Konuları" />
+                                                    <String fx:value="Duyuru Bildirimi Konuları" />
+                                                    <String fx:value="Diğer Bildirim Konuları" />
+                                                    <String fx:value="Tümü" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <AnchorPane layoutX="14.0" layoutY="44.0" prefHeight="264.0" prefWidth="683.0" style="-fx-border-color:lightgray;">
+                                            <children>
+                                                <Button layoutX="318.0" layoutY="35.0" mnemonicParsing="false" onAction="#right3" prefWidth="47.0" text="&gt;" />
+                                                <Button layoutX="318.0" layoutY="85.0" mnemonicParsing="false" onAction="#left3" prefWidth="47.0" text="&lt;" />
+                                                <Button layoutX="318.0" layoutY="135.0" mnemonicParsing="false" onAction="#rightall3" prefWidth="47.0" text="&gt;&gt;" />
+                                                <Button layoutX="318.0" layoutY="185.0" mnemonicParsing="false" onAction="#leftall3" prefWidth="47.0" text="&lt;&lt;" />
+                                                <ListView fx:id="list5" layoutX="14.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                                <ListView fx:id="list6" layoutX="379.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                            </children>
+                                        </AnchorPane>
+                                        <CheckBox layoutX="515.0" layoutY="14.0" mnemonicParsing="false" text="Konsolide Olanlar" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Fon Bildirim Konuları">
+                            <content>
+                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" text="Bildirim Sınıfı" />
+                                        <ComboBox fx:id="cmbbox4" layoutX="105.0" layoutY="12.0" onAction="#cmbbox4" prefWidth="397.0" promptText="Finansal Rapor Bildirim Konuları">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Finansal Rapor Bildirim Konuları" />
+                                                    <String fx:value="Özel Durum Açıklaması Konuları" />
+                                                    <String fx:value="Duyuru Bildirimi Konuları" />
+                                                    <String fx:value="Diğer Bildirim Konuları" />
+                                                    <String fx:value="Tümü" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <AnchorPane layoutX="14.0" layoutY="44.0" prefHeight="264.0" prefWidth="683.0" style="-fx-border-color:lightgray;">
+                                            <children>
+                                                <Button layoutX="318.0" layoutY="35.0" mnemonicParsing="false" onAction="#right4" prefWidth="47.0" text="&gt;" />
+                                                <Button layoutX="318.0" layoutY="85.0" mnemonicParsing="false" onAction="#left4" prefWidth="47.0" text="&lt;" />
+                                                <Button layoutX="318.0" layoutY="135.0" mnemonicParsing="false" onAction="#rightall4" prefWidth="47.0" text="&gt;&gt;" />
+                                                <Button layoutX="318.0" layoutY="185.0" mnemonicParsing="false" onAction="#leftall4" prefWidth="47.0" text="&lt;&lt;" />
+                                                <ListView fx:id="list7" layoutX="14.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                                <ListView fx:id="list8" layoutX="379.0" layoutY="15.0" prefHeight="235.0" prefWidth="290.0" />
+                                            </children>
+                                        </AnchorPane>
+                                        <CheckBox layoutX="515.0" layoutY="14.0" mnemonicParsing="false" text="Konsolide Olanlar" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+                <CheckBox fx:id="aktif" alignment="CENTER" allowIndeterminate="false" contentDisplay="LEFT" graphicTextGap="8.0" indeterminate="false" layoutX="25.0" layoutY="39.0" mnemonicParsing="false" prefWidth="83.0" style="" text="Aktif" underline="false" wrapText="false" />
+                <Label layoutX="25.0" layoutY="14.0" text="Filtre Adı" />
+                <TextField fx:id="filterName" layoutX="118.0" layoutY="13.0" prefWidth="200.0" />
+                <Button layoutX="344.0" layoutY="13.0" mnemonicParsing="false" onAction="#save" prefWidth="94.0" text="Kaydet" />
+            </children>
+        </AnchorPane>
+        <Label layoutX="28.0" layoutY="14.0" text="Kayıtlı Filtreler" />
+        <ComboBox fx:id="filters" layoutX="132.0" layoutY="12.0" prefWidth="200.0" promptText="Filtreler">
+            <items>
+                <FXCollections fx:factory="observableArrayList" />
+            </items>
+        </ComboBox>
+        <Button layoutX="358.0" layoutY="11.0" mnemonicParsing="false" onAction="#load" prefWidth="80.0" text="Yükle" />
+        <Button layoutX="452.0" layoutY="11.0" mnemonicParsing="false" onAction="#delete" prefWidth="80.0" text="Sil" />
+        <Label layoutX="28.0" layoutY="48.0" style="-fx-background-color:gainsboro;" text="Filtre Detayı" />
+    </children>
+</AnchorPane>
+

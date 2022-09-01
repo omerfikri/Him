@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="135.0" prefWidth="514.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.him.confirm1Controller">
+    <children>
+        <Label layoutX="87.0" layoutY="32.0" prefHeight="37.0" prefWidth="413.0" text="Bu isimde bir filtre tanımlı, lütfen başka bir isim belirleyin.">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <ImageView fitHeight="65.25003044044355" fitWidth="87.00003814697266" layoutX="0.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" visible="true">
+            <image>
+                <Image url="@error.jpg" />
+            </image>
+        </ImageView>
+        <Pane layoutX="0.0" layoutY="83.0" prefHeight="52.0" prefWidth="514.0">
+            <children>
+                <Button fx:id="ok" layoutX="367.0" layoutY="14.0" mnemonicParsing="false" onAction="#shut" prefWidth="125.0" text="Tamam" />
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

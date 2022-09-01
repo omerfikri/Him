@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="128.00009999999747" prefWidth="283.0" style="-fx-background-color:gainsboro;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.him.notificationController">
+    <children>
+        <Label alignment="CENTER" contentDisplay="LEFT" layoutX="77.0" layoutY="14.0" prefHeight="55.0" prefWidth="166.0" style="" text="Yeni Bildirim Geldi">
+            <font>
+                <Font name="Times New Roman" size="20.0" fx:id="x1" />
+            </font>
+        </Label>
+        <Button fx:id="okey" font="$x1" layoutX="110.0" layoutY="64.0" mnemonicParsing="false" onAction="#ok" prefHeight="35.0" prefWidth="100.0" text="Tamam" />
+        <ImageView fx:id="imginfo" fitHeight="62.999969482421875" fitWidth="62.999969482421875" layoutX="14.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@info.png" />
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>
