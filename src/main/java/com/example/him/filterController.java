@@ -5,13 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
@@ -40,6 +39,7 @@ public class filterController implements Initializable {
     SQLiteJDBC sqlite = new SQLiteJDBC();
     int id;
     int sayi=0;
+    boolean loaded;
 
     private final ObservableList<String> liste1 = FXCollections.observableArrayList();
     private final ObservableList<String> liste2 = FXCollections.observableArrayList();
@@ -50,6 +50,14 @@ public class filterController implements Initializable {
     private final ObservableList<String> liste7 = FXCollections.observableArrayList();
     private final ObservableList<String> liste8 = FXCollections.observableArrayList();
 
+    private final ObservableList<String> items1 = FXCollections.observableArrayList();
+    private final ObservableList<String> items2 = FXCollections.observableArrayList();
+    private final ObservableList<String> items3 = FXCollections.observableArrayList();
+    private final ObservableList<String> items4 = FXCollections.observableArrayList();
+    private final ObservableList<String> items5 = FXCollections.observableArrayList();
+    private final ObservableList<String> items6 = FXCollections.observableArrayList();
+    private final ObservableList<String> items7 = FXCollections.observableArrayList();
+    private final ObservableList<String> items8 = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         sirket("IGS");
@@ -57,6 +65,26 @@ public class filterController implements Initializable {
         fon("4028328d71bc3c65017237144e7778a3");
         fon("4028328c55064295015506dc365b4c2c");
         fon_bildirim("FR");
+        loaded = false;
+
+        list1.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list2.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list3.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list4.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list5.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list6.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list7.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        list8.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        list1.addEventFilter(MouseEvent.MOUSE_PRESSED, this::rightpush1);
+        list2.addEventFilter(MouseEvent.MOUSE_PRESSED, this::leftpush1);
+        list3.addEventFilter(MouseEvent.MOUSE_PRESSED, this::rightpush2);
+        list4.addEventFilter(MouseEvent.MOUSE_PRESSED, this::leftpush2);
+        list5.addEventFilter(MouseEvent.MOUSE_PRESSED, this::rightpush3);
+        list6.addEventFilter(MouseEvent.MOUSE_PRESSED, this::leftpush3);
+        list7.addEventFilter(MouseEvent.MOUSE_PRESSED, this::rightpush4);
+        list8.addEventFilter(MouseEvent.MOUSE_PRESSED, this::leftpush4);
+
         select();
     }
     public void select(){
@@ -106,31 +134,26 @@ public class filterController implements Initializable {
     public void save(){
         int count = 0;
         if(filterName.getText()==""){
+            System.out.println("boş değer girilemez");
         }else{
-            if(sayi==1) {
+            if(loaded){
+                System.out.println("update");
                 String name = filterName.getText();
                 String check = String.valueOf(aktif.isSelected());
                 sqlite.update(id,name,check,liste2,liste4,liste6,liste8);
-                sayi = 0;
             }else{
+                System.out.println("save");
+
                 String filtres= filters.getItems().toString();
                 String filtre = filtres.substring(1, filtres.length() - 1);
                 String[] dizi = filtre.split(",");
-                for(int i = 0; i < dizi.length; i++){
+                for(int i = 0; i < dizi.length; i++) {
                     dizi[i] = dizi[i].trim();
-                    if(dizi[i].equals(filterName.getText())){
+                    if(dizi[i].equals(filterName.getText())) {
                         count++;
                     }
                 }
-                if(count == 0){
-
-                    String name = filterName.getText();
-                    String check = String.valueOf(aktif.isSelected());
-
-                    sqlite.insert(name, check, liste2, liste4, liste6, liste8, id);
-
-                    filters.getItems().addAll(name);
-                }else{
+                if(count != 0){
                     try {
                         Parent part = FXMLLoader.load(getClass().getResource("confirm1.fxml"));
                         Stage stage = new Stage();
@@ -149,7 +172,13 @@ public class filterController implements Initializable {
                     } catch (Exception e) {
                         System.out.println(e.getClass().getName() + ": " + e.getMessage());
                     }
-                    System.out.println("Bu isimde filtre bulunmaktadır");
+                }else{
+                    String name = filterName.getText();
+                    String check = String.valueOf(aktif.isSelected());
+                    //System.out.println(liste4);
+                    sqlite.insert(name, check, liste2, liste4, liste6, liste8, id);
+
+                    filters.getItems().addAll(name);
                 }
             }
         }
@@ -194,8 +223,10 @@ public class filterController implements Initializable {
 
                     for (int i = 0; i < dizi1.length; i++) {
                         dizi1[i] = dizi1[i].trim();
-                        liste2.add(dizi1[i]);
-                        liste1.remove(dizi1[i]);
+                        if(!dizi1[i].equals("")) {
+                            liste2.add(dizi1[i]);
+                            liste1.remove(dizi1[i]);
+                        }
                     }
                     list1.setItems(liste1);
                     list2.setItems(liste2);
@@ -205,8 +236,10 @@ public class filterController implements Initializable {
 
                     for(int i = 0; i < dizi2.length; i++){
                         dizi2[i] = dizi2[i].trim();
-                        liste4.add(dizi2[i]);
-                        liste3.remove(dizi1[i]);
+                        if(!dizi2[i].equals("")) {
+                            liste4.add(dizi2[i]);
+                            liste3.remove(dizi2[i]);
+                        }
                     }
                     list3.setItems(liste3);
                     list4.setItems(liste4);
@@ -216,8 +249,10 @@ public class filterController implements Initializable {
 
                     for(int i = 0; i < dizi3.length; i++){
                         dizi3[i] = dizi3[i].trim();
-                        liste6.add(dizi3[i]);
-                        liste5.remove(dizi1[i]);
+                        if(!dizi3[i].equals("")) {
+                            liste6.add(dizi3[i]);
+                            liste5.remove(dizi3[i]);
+                        }
                     }
                     list5.setItems(liste5);
                     list6.setItems(liste6);
@@ -227,8 +262,10 @@ public class filterController implements Initializable {
 
                     for(int i = 0; i < dizi4.length; i++){
                         dizi4[i] = dizi4[i].trim();
-                        liste8.add(dizi1[i]);
-                        liste7.remove(dizi4[i]);
+                        if(!dizi4[i].equals("")) {
+                            liste8.add(dizi4[i]);
+                            liste7.remove(dizi4[i]);
+                        }
                     }
                     list7.setItems(liste7);
                     list8.setItems(liste8);
@@ -237,6 +274,7 @@ public class filterController implements Initializable {
             rs.close();
             statement.close();
             connection.close();
+            loaded = true;
 
         }catch (Exception e) {
             System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -255,17 +293,23 @@ public class filterController implements Initializable {
         list8.getItems().clear();
     }
     public void right1(){
-        if(list1.getSelectionModel().getSelectedItem()!=null) {
-            liste2.add(list1.getSelectionModel().getSelectedItem());
-            list1.getItems().remove(list1.getSelectionModel().getSelectedItem());
-            list2.setItems(liste2);
+        if(list1.getSelectionModel().getSelectedItem()!=null) {   //items2 2.geçici liste görevinde  liste2 1. geçici liste görevinde
+            if(!items2.isEmpty()) {
+                liste2.addAll(items2);
+                list1.getItems().removeAll(liste2);
+                list2.setItems(liste2);
+            }
+            items2.clear();
         }
     }
     public void left1(){
-        if (list2.getSelectionModel().getSelectedItem() != null) {
-            liste1.add(list2.getSelectionModel().getSelectedItem());
-            list2.getItems().remove(list2.getSelectionModel().getSelectedItem());
-            list1.setItems(liste1);
+        if(list2.getSelectionModel().getSelectedItem()!=null) {
+            if(!items1.isEmpty()) {
+                liste1.addAll(items1);
+                list2.getItems().removeAll(liste1);
+                list1.setItems(liste1);
+            }
+            items1.clear();
         }
     }
     public void rightall1(){
@@ -279,17 +323,23 @@ public class filterController implements Initializable {
         list1.setItems(liste1);
     }
     public void right2(){
-        if(list3.getSelectionModel().getSelectedItem()!=null) {
-            liste4.add(list3.getSelectionModel().getSelectedItem());
-            list3.getItems().remove(list3.getSelectionModel().getSelectedItem());
-            list4.setItems(liste4);
+        if(list3.getSelectionModel().getSelectedItem()!=null) {   //items2 2.geçici liste görevinde  liste2 1. geçici liste görevinde
+            if(!items4.isEmpty()) {
+                liste4.addAll(items4);
+                list3.getItems().removeAll(liste4);
+                list4.setItems(liste4);
+            }
+            items4.clear();
         }
     }
     public void left2(){
-        if (list4.getSelectionModel().getSelectedItem() != null) {
-            liste3.add(list4.getSelectionModel().getSelectedItem());
-            list4.getItems().remove(list4.getSelectionModel().getSelectedItem());
-            list3.setItems(liste3);
+        if(list4.getSelectionModel().getSelectedItem()!=null) {
+            if(!items3.isEmpty()) {
+                liste3.addAll(items3);
+                list4.getItems().removeAll(liste3);
+                list3.setItems(liste3);
+            }
+            items3.clear();
         }
     }
     public void rightall2(){
@@ -303,17 +353,23 @@ public class filterController implements Initializable {
         list3.setItems(liste3);
     }
     public void right3(){
-        if(list5.getSelectionModel().getSelectedItem()!=null) {
-            liste6.add(list5.getSelectionModel().getSelectedItem());
-            list5.getItems().remove(list5.getSelectionModel().getSelectedItem());
-            list6.setItems(liste6);
+        if(list5.getSelectionModel().getSelectedItem()!=null) {   //items2 2.geçici liste görevinde  liste2 1. geçici liste görevinde
+            if(!items6.isEmpty()) {
+                liste6.addAll(items6);
+                list5.getItems().removeAll(liste6);
+                list6.setItems(liste6);
+            }
+            items6.clear();
         }
     }
     public void left3(){
-        if (list6.getSelectionModel().getSelectedItem() != null) {
-            liste5.add(list6.getSelectionModel().getSelectedItem());
-            list6.getItems().remove(list6.getSelectionModel().getSelectedItem());
-            list5.setItems(liste5);
+        if(list6.getSelectionModel().getSelectedItem()!=null) {
+            if(!items5.isEmpty()) {
+                liste5.addAll(items5);
+                list6.getItems().removeAll(liste5);
+                list5.setItems(liste5);
+            }
+            items5.clear();
         }
     }
     public void rightall3(){
@@ -327,17 +383,23 @@ public class filterController implements Initializable {
         list5.setItems(liste5);
     }
     public void right4(){
-        if(list7.getSelectionModel().getSelectedItem()!=null) {
-            liste8.add(list7.getSelectionModel().getSelectedItem());
-            list7.getItems().remove(list7.getSelectionModel().getSelectedItem());
-            list8.setItems(liste8);
+        if(list7.getSelectionModel().getSelectedItem()!=null) {   //items2 2.geçici liste görevinde  liste2 1. geçici liste görevinde
+            if(!items8.isEmpty()) {
+                liste8.addAll(items8);
+                list7.getItems().removeAll(liste8);
+                list8.setItems(liste8);
+            }
+            items8.clear();
         }
     }
     public void left4(){
-        if (list8.getSelectionModel().getSelectedItem() != null) {
-            liste7.add(list8.getSelectionModel().getSelectedItem());
-            list8.getItems().remove(list8.getSelectionModel().getSelectedItem());
-            list7.setItems(liste7);
+        if(list8.getSelectionModel().getSelectedItem()!=null) {
+            if(!items7.isEmpty()) {
+                liste7.addAll(items7);
+                list8.getItems().removeAll(liste7);
+                list7.setItems(liste7);
+            }
+            items7.clear();
         }
     }
     public void rightall4(){
@@ -385,7 +447,9 @@ public class filterController implements Initializable {
                 for(int i = 0; i < data_obj.size(); i++){
                     JSONObject new_obj = (JSONObject) data_obj.get(i);
                     String bist = (String) new_obj.get("kapMemberTitle");
-                    liste1.add((bist));
+                    if(!liste1.contains(bist)) {
+                        liste1.add((bist));
+                    }
                 }
                 Collections.sort(liste1);
                 list1.setItems(liste1);
@@ -429,7 +493,9 @@ public class filterController implements Initializable {
                 for(int i = 0; i < data_obj.size(); i++){
                     JSONObject new_obj = (JSONObject) data_obj.get(i);
                     String bist = (String) new_obj.get("title");
-                    liste3.add((bist));
+                    if(!liste3.contains(bist)) {
+                        liste3.add((bist));
+                    }
                 }
                 Collections.sort(liste3);
                 list3.setItems(liste3);
@@ -473,7 +539,9 @@ public class filterController implements Initializable {
                 for(int i = 0; i < data_obj.size(); i++){
                     JSONObject new_obj = (JSONObject) data_obj.get(i);
                     String bist = (String) new_obj.get("title");
-                    liste5.add((bist));
+                    if(!liste5.contains(bist)) {
+                        liste5.add((bist));
+                    }
                 }
                 Collections.sort(liste5);
                 list5.setItems(liste5);
@@ -517,13 +585,271 @@ public class filterController implements Initializable {
                 for(int i = 0; i < data_obj.size(); i++){
                     JSONObject new_obj = (JSONObject) data_obj.get(i);
                     String bist = (String) new_obj.get("title");
-                    liste7.add((bist));
+                    if (!liste7.contains(bist)) {
+                        liste7.add((bist));
+                    }
                 }
                 Collections.sort(liste7);
                 list7.setItems(liste7);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void rightpush1(MouseEvent evt){
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list1 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items2.size(); i++) {
+                        if(items2.get(i).equals(lv.getItems().get(index))){
+                            items2.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items2.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void leftpush1(MouseEvent evt){
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list2 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items1.size(); i++) {
+                        if(items1.get(i).equals(lv.getItems().get(index))){
+                            items1.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items1.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void rightpush2(MouseEvent evt) {
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list3 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items4.size(); i++) {
+                        if(items4.get(i).equals(lv.getItems().get(index))){
+                            items4.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items4.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void leftpush2(MouseEvent evt){
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list4 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items3.size(); i++) {
+                        if(items3.get(i).equals(lv.getItems().get(index))){
+                            items3.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items3.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void rightpush3(MouseEvent evt) {
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list5 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items6.size(); i++) {
+                        if(items6.get(i).equals(lv.getItems().get(index))){
+                            items6.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items6.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void leftpush3(MouseEvent evt){
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list6 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items5.size(); i++) {
+                        if(items5.get(i).equals(lv.getItems().get(index))){
+                            items5.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items5.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void rightpush4(MouseEvent evt) {
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list7 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items8.size(); i++) {
+                        if(items8.get(i).equals(lv.getItems().get(index))){
+                            items8.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items8.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
+        }
+    }
+    public void leftpush4(MouseEvent evt){
+
+        Node node = evt.getPickResult().getIntersectedNode();
+
+        while (node != null && node != list8 && !(node instanceof ListCell)) {
+            node = node.getParent();
+        }
+
+        if (node instanceof ListCell) {
+            evt.consume();
+
+            ListCell cell = (ListCell) node;
+            ListView lv = cell.getListView();
+
+            lv.requestFocus();
+
+            if (!cell.isEmpty()) {
+                int index = cell.getIndex();
+                if (cell.isSelected()) {
+                    lv.getSelectionModel().clearSelection(index);
+                    for(int i = 0; i < items7.size(); i++) {
+                        if(items7.get(i).equals(lv.getItems().get(index))){
+                            items7.remove(i);
+                        }
+                    }
+                } else {
+                    lv.getSelectionModel().select(index);
+                    items7.add((String) lv.getSelectionModel().getSelectedItem());
+                }
+            }
         }
     }
     @FXML
@@ -575,13 +901,7 @@ public class filterController implements Initializable {
         } else if (secim.equals("Borsa Yatırım Fonu")) {
             word="4028328c55064295015506db980a4bec";
             fon(word);
-        } /*else if (secim.equals("Varlık Finansman Fonları")) {
-            word="ALL";
-            fon(word);
-        } else if (secim.equals("Konut Finansman Fonları")) {
-            word="ALL";
-            fon(word);*
-        }*/ else if (secim.equals("Gayrimenkul Yatırım Fonları")) {
+        }  else if (secim.equals("Gayrimenkul Yatırım Fonları")) {
             word="4028328c5fc60da7015fe285cb2c63a6";
             fon(word);
         } else if (secim.equals("Girişim Sermayesi Yatırım Fonları")) {

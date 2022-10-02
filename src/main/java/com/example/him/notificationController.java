@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 
 public class notificationController {
 
-
     @FXML
     private Button okey;
 
