@@ -52,11 +52,11 @@ public class MainController implements Initializable {
     private ComboBox choice;
     @FXML
     private Label names;
-
+    Long id = 0L;
+    boolean isnotification = false;
     private String zaman="";
-    private int sayi1;
-    private int sayi2=0;
     JSONArray data_obj;
+    Timeline timeline;
     SQLiteJDBC sqlite = new SQLiteJDBC();
     private final ObservableList<Data> list = FXCollections.observableArrayList();
     private final ObservableList<Data> list2 = FXCollections.observableArrayList();
@@ -77,30 +77,56 @@ public class MainController implements Initializable {
         Date nextdate = new Date(nextsaniye);
 
         String date = dateFormat.format(nextdate);
-        item_of_list(date);
+        nameof_lists();
+        api(date);
         table1.setItems(list);
-        sayi1=list.size();
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(7), e-> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(15), e-> {
             if(zaman==""){
                 zaman= date;
             }
-            item_of_list(zaman);
+            api(zaman);
         }));
-        timeline.setCycleCount(7);
+        timeline.setCycleCount(15);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
-    public void item_of_list(String zaman){
-        bildirimTarihi.setCellValueFactory(new PropertyValueFactory<>("date"));
-        bildirimSinifi.setCellValueFactory(new PropertyValueFactory<>("bildirimSinifi"));
-        gonderenSirket.setCellValueFactory(new PropertyValueFactory<>("gonderenSirket"));
-        bildirimKonusu.setCellValueFactory(new PropertyValueFactory<>("bildirimKonusu"));
-        ozet.setCellValueFactory(new PropertyValueFactory<>("ilgiliSirketler"));
-        ilgiliSirketler.setCellValueFactory(new PropertyValueFactory<>("ozet"));
-        bildirimId.setCellValueFactory(new PropertyValueFactory<>("bildirimId"));
-        ek.setCellValueFactory(new PropertyValueFactory<>("ek"));
+    public void item_of_list(){
+        list.clear();
 
+        for(int i = 0; i < data_obj.size(); i++){
+            JSONObject new_obj = (JSONObject) data_obj.get(i);
+            String tarih = (String) new_obj.get("publishDate");
+
+            String[] dizi = tarih.split(" ");
+            String gun,ay,yil;
+            yil = dizi[0].substring(0,4);
+            ay = dizi[0].substring(4,8);
+            gun = dizi[0].substring(8,10);
+            tarih=gun+ay+yil+" "+dizi[1];
+
+            String sinif = (String) new_obj.get("disclosureClass");
+            String sirket = (String) new_obj.get("companyTitle");
+            String bildirimKonusu = (String) new_obj.get("title");
+
+            String ozet = (String) new_obj.get("summary");
+            if(ozet == null){
+                ozet = "";
+            }
+
+            String ilgiliSirket = (String) new_obj.get("relatedStocks");
+            if(ilgiliSirket == null){
+                ilgiliSirket = "";
+            }
+
+            String bildirimId = new_obj.get("disclosureIndex").toString();
+            String ek = new_obj.get("attachmentCount").toString();
+            list.add(new Data(tarih,sinif,sirket,bildirimKonusu,ilgiliSirket,ozet,bildirimId,ek));
+        }
+        select();
+        lbl1.setText("Tüm Bildirimler - ["+list.size()+" adet]");
+    }
+    public void api(String zaman) {
         try {
             String url ="https://kap.org.tr/tr/api/kapi/him/disclosure/list?fromDate="+zaman;
 
@@ -109,7 +135,6 @@ public class MainController implements Initializable {
             conn.setRequestMethod("GET");
             conn.connect();
 
-            //Getting the response code
             int responsecode = conn.getResponseCode();
 
             if (responsecode != 200) {
@@ -119,115 +144,39 @@ public class MainController implements Initializable {
                 StringBuilder inline = new StringBuilder();
                 Scanner scanner = new Scanner(link.openStream());
 
-                //Write all the JSON data into a string using a scanner
                 while (scanner.hasNext()) {
                     inline.append(scanner.nextLine());
                 }
-
-                //Close the scanner
                 scanner.close();
-                //Using the JSON simple library parse the string into a json object
+
                 JSONParser parse = new JSONParser();
                 data_obj = (JSONArray) parse.parse(inline.toString());
 
-                if(data_obj != null){
-                    //Get the required data using its key
+                if(data_obj != null) {
                     System.out.println("No Problem");
+
+                    JSONObject json =  (JSONObject) data_obj.get(0);
+                    if(!id.equals(json.get("disclosureIndex"))){
+                        item_of_list();
+                        id = (Long) json.get("disclosureIndex");
+                        if(isnotification) {
+                            String s = list.get(0).getBildirimKonusu();
+                            notificationController.notification(s);
+                        }
+                        isnotification = true;
+                    }
                 }else{
                     System.out.println((Object) null);
                 }
-
-                if(data_obj.size() != sayi1){
-                    list.clear();
-
-                    for(int i = 0; i < data_obj.size(); i++){
-                        JSONObject new_obj = (JSONObject) data_obj.get(i);
-                        String tarih = (String) new_obj.get("publishDate");
-
-                        String[] dizi = tarih.split(" ");
-                        String gun,ay,yil;
-                        yil = dizi[0].substring(0,4);
-                        ay = dizi[0].substring(4,8);
-                        gun = dizi[0].substring(8,10);
-                        tarih=gun+ay+yil+" "+dizi[1];
-
-                        String sinif = (String) new_obj.get("disclosureClass");
-                        String sirket = (String) new_obj.get("companyTitle");
-                        String bildirimKonusu = (String) new_obj.get("title");
-
-                        String ozet = (String) new_obj.get("summary");
-                        if(ozet == null){
-                            ozet = "";
-                        }
-
-                        String ilgiliSirket = (String) new_obj.get("relatedStocks");
-                        if(ilgiliSirket == null){
-                            ilgiliSirket = "";
-                        }
-
-                        String bildirimId = new_obj.get("disclosureIndex").toString();
-                        String ek = new_obj.get("attachmentCount").toString();
-                        list.add(new Data(tarih,sinif,sirket,bildirimKonusu,ilgiliSirket,ozet,bildirimId,ek));
-                        sayi1=list.size();
-                    }sayi2++;
-                    if(sayi2 > 1){
-                        notification();
-                    }
-                }
-                select();
-                lbl1.setText("Tüm Bildirimler - ["+list.size()+" adet]");
             }
-        }   catch(Exception e){
+        }catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-    public void notification() {
-        try {
-            Parent part = FXMLLoader.load(getClass().getResource("notification.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(part);
-            stage.setScene(scene);
-            stage.setTitle("Yeni Bildirim");
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.setResizable(false);
-            stage.setAlwaysOnTop(true);
-            stage.show();
-
-            String title = "Yeni Bildirim Geldi";
-            String message = list.get(0).getBildirimKonusu();
-            Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("info.png")));
-
-            String os = System.getProperty("os.name");
-            if (os.contains("Linux")) {
-                ProcessBuilder builder = new ProcessBuilder(
-                        "zenity",
-                        "--notification",
-                        "--title=" + title,
-                        "--text=" + message);
-                builder.inheritIO().start();
-            } else if (os.contains("Mac")) {
-                ProcessBuilder builder = new ProcessBuilder(
-                        "osascript", "-e",
-                        "display notification \"" + message + "\""
-                                + " with title \"" + title + "\"");
-                builder.inheritIO().start();
-            } else if (SystemTray.isSupported()) {
-                SystemTray tray = SystemTray.getSystemTray();
-
-                TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
-                trayIcon.setImageAutoSize(true);
-                tray.add(trayIcon);
-
-                trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     @FXML
     public void getir(){
+        id=0L;
         String secim = (String) choice.getSelectionModel().getSelectedItem();
-        sayi2=0;
 
         if(secim==null){
             secim = "";
@@ -258,7 +207,9 @@ public class MainController implements Initializable {
 
         zaman= dateFormat.format(nextdate);
         System.out.println(zaman);
-        item_of_list(zaman);
+        timeline.pause();
+        api(zaman);
+        timeline.play();
     }
     @FXML
     public void click(){
@@ -433,15 +384,6 @@ public class MainController implements Initializable {
     public void filterList(){
         list2.clear();
 
-        bildirimTarihi1.setCellValueFactory(new PropertyValueFactory<>("date"));
-        bildirimSinifi1.setCellValueFactory(new PropertyValueFactory<>("bildirimSinifi"));
-        gonderenSirket1.setCellValueFactory(new PropertyValueFactory<>("gonderenSirket"));
-        bildirimKonusu1.setCellValueFactory(new PropertyValueFactory<>("bildirimKonusu"));
-        ozet1.setCellValueFactory(new PropertyValueFactory<>("ilgiliSirketler"));
-        ilgiliSirketler1.setCellValueFactory(new PropertyValueFactory<>("ozet"));
-        bildirimId1.setCellValueFactory(new PropertyValueFactory<>("bildirimId"));
-        ek1.setCellValueFactory(new PropertyValueFactory<>("ek"));
-
         for (int i = 0; i < list.size(); i++) {    //Şirket Filtresi
             for (int j = 0; j < liste1.size(); j++) {
                 if (liste1.get(j).equals(list.get(i).getGonderenSirket())) {
@@ -479,5 +421,24 @@ public class MainController implements Initializable {
 
         table2.setItems(list2);
         lbl2.setText("Filtrelenmiş Bildirimler - ["+list2.size()+" adet]");
+    }
+    public void nameof_lists(){
+        bildirimTarihi.setCellValueFactory(new PropertyValueFactory<>("date"));
+        bildirimSinifi.setCellValueFactory(new PropertyValueFactory<>("bildirimSinifi"));
+        gonderenSirket.setCellValueFactory(new PropertyValueFactory<>("gonderenSirket"));
+        bildirimKonusu.setCellValueFactory(new PropertyValueFactory<>("bildirimKonusu"));
+        ozet.setCellValueFactory(new PropertyValueFactory<>("ilgiliSirketler"));
+        ilgiliSirketler.setCellValueFactory(new PropertyValueFactory<>("ozet"));
+        bildirimId.setCellValueFactory(new PropertyValueFactory<>("bildirimId"));
+        ek.setCellValueFactory(new PropertyValueFactory<>("ek"));
+
+        bildirimTarihi1.setCellValueFactory(new PropertyValueFactory<>("date"));
+        bildirimSinifi1.setCellValueFactory(new PropertyValueFactory<>("bildirimSinifi"));
+        gonderenSirket1.setCellValueFactory(new PropertyValueFactory<>("gonderenSirket"));
+        bildirimKonusu1.setCellValueFactory(new PropertyValueFactory<>("bildirimKonusu"));
+        ozet1.setCellValueFactory(new PropertyValueFactory<>("ilgiliSirketler"));
+        ilgiliSirketler1.setCellValueFactory(new PropertyValueFactory<>("ozet"));
+        bildirimId1.setCellValueFactory(new PropertyValueFactory<>("bildirimId"));
+        ek1.setCellValueFactory(new PropertyValueFactory<>("ek"));
     }
 }
