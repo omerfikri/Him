@@ -3,6 +3,7 @@ package com.example.him;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,20 +11,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -33,7 +30,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.*;
 public class MainController implements Initializable {
 
@@ -81,13 +77,61 @@ public class MainController implements Initializable {
         api(date);
         table1.setItems(list);
 
-        timeline = new Timeline(new KeyFrame(Duration.seconds(15), e-> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(20), e-> {
             if(zaman==""){
                 zaman= date;
             }
-            api(zaman);
+            Thread thread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    try {
+                        String url ="https://kap.org.tr/tr/api/kapi/him/disclosure/list?fromDate="+zaman;
+
+                        URL link = new URL(url);
+                        HttpURLConnection conn = (HttpURLConnection) link.openConnection();
+                        conn.setRequestMethod("GET");
+                        conn.connect();
+
+                        int responsecode = conn.getResponseCode();
+
+                        if (responsecode != 200) {
+                            throw new RuntimeException("HttpResponseCode: " + responsecode);
+                        } else {
+
+                            StringBuilder inline = new StringBuilder();
+                            Scanner scanner = new Scanner(link.openStream());
+
+                            while (scanner.hasNext()) {
+                                inline.append(scanner.nextLine());
+                            }
+                            scanner.close();
+
+                            JSONParser parse = new JSONParser();
+                            data_obj = (JSONArray) parse.parse(inline.toString());
+                            JSONObject json =  (JSONObject) data_obj.get(0);
+
+                            if (data_obj != null) {
+                                System.out.println("No Problem");
+                                if(!id.equals(json.get("disclosureIndex"))){
+                                    Platform.runLater(() -> {
+                                        item_of_list();
+                                        id = (Long) json.get("disclosureIndex");
+                                        String s = list.get(0).getBildirimKonusu();
+                                        notificationController.notification(s);
+                                    });
+                                }
+                            }
+                        }
+                    }catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            });
+            if(!thread.isAlive()) {
+                thread.start();
+            }
         }));
-        timeline.setCycleCount(15);
+        timeline.setCycleCount(20);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -126,9 +170,9 @@ public class MainController implements Initializable {
         select();
         lbl1.setText("Tüm Bildirimler - ["+list.size()+" adet]");
     }
-    public void api(String zaman) {
+    public void api(String date) {
         try {
-            String url ="https://kap.org.tr/tr/api/kapi/him/disclosure/list?fromDate="+zaman;
+            String url ="https://kap.org.tr/tr/api/kapi/him/disclosure/list?fromDate="+date;
 
             URL link = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) link.openConnection();
@@ -156,15 +200,8 @@ public class MainController implements Initializable {
                     System.out.println("No Problem");
 
                     JSONObject json =  (JSONObject) data_obj.get(0);
-                    if(!id.equals(json.get("disclosureIndex"))){
-                        item_of_list();
-                        id = (Long) json.get("disclosureIndex");
-                        if(isnotification) {
-                            String s = list.get(0).getBildirimKonusu();
-                            notificationController.notification(s);
-                        }
-                        isnotification = true;
-                    }
+                    item_of_list();
+                    id = (Long) json.get("disclosureIndex");
                 }else{
                     System.out.println((Object) null);
                 }
