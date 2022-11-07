@@ -12,6 +12,7 @@ Haber İzleme Modülü, Kamuyu Aydınlatma Platformu(KAP)'nda yayınlanan duyuru
   - org.xerial.sqlitejdbc
 
   Bağımlılıklar önce projenin pom.xml sayfasında kütüphane olarak eklenir. Daha sonrasında module-info.java dosyasına requires olarak eklenir.
+  Bunların hepsi projede içermektedir kütüphaneler eksik ise pom.xml'den indirebilirsiniz.
 
 ## Class yapıları
   - MainApplication,
